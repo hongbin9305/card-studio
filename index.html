@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="이미지와 문구를 조합해 SNS 카드 이미지를 만드는 웹 편집기">
+  <link rel="icon" href="data:,">
+  <title>FRAME LAB — Card Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">F</span>
+      <div>
+        <h1>FRAME LAB</h1>
+        <p>CARD STUDIO</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <span class="status-dot"></span>
+      <span>LOCAL WORKSPACE</span>
+    </div>
+  </header>
+
+  <main class="workspace">
+
+    <!-- 왼쪽 편집 패널 -->
+    <aside class="panel controls-panel">
+      <div class="panel-heading">
+        <span>01</span>
+        <div>
+          <h2>EDITOR</h2>
+          <p>이미지와 문구를 편집하세요.</p>
+        </div>
+      </div>
+
+      <section class="control-section">
+        <label class="section-label">IMAGE</label>
+
+        <label class="upload-box" for="imageInput">
+          <strong>IMAGE UPLOAD</strong>
+          <span>PNG · JPEG</span>
+        </label>
+
+        <input
+          id="imageInput"
+          type="file"
+          accept="image/png,image/jpeg"
+          hidden
+        >
+
+        <p id="fileMessage" class="helper-text">
+          PNG 또는 JPEG 이미지를 선택하세요.
+        </p>
+      </section>
+
+      <section class="control-section">
+        <label class="section-label" for="captionInput">TEXT</label>
+
+        <textarea
+          id="captionInput"
+          maxlength="300"
+          placeholder="카드에 표시할 문구를 입력하세요."
+        >오늘의 순간을
+나만의 프레임으로.</textarea>
+
+        <div class="control-row">
+          <div class="field">
+            <label for="fontSizeInput">SIZE</label>
+            <input
+              id="fontSizeInput"
+              type="range"
+              min="24"
+              max="120"
+              value="58"
+            >
+          </div>
+
+          <div class="field color-field">
+            <label for="textColorInput">COLOR</label>
+            <input
+              id="textColorInput"
+              type="color"
+              value="#ffffff"
+            >
+          </div>
+        </div>
+
+        <div class="control-row">
+          <div class="field">
+            <label for="textXInput">X POSITION</label>
+            <input
+              id="textXInput"
+              type="range"
+              min="5"
+              max="95"
+              value="50"
+            >
+          </div>
+
+          <div class="field">
+            <label for="textYInput">Y POSITION</label>
+            <input
+              id="textYInput"
+              type="range"
+              min="5"
+              max="95"
+              value="78"
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <span class="section-label">RATIO</span>
+
+        <div class="ratio-buttons" role="group" aria-label="이미지 비율">
+          <button class="ratio-button active" data-ratio="1:1" type="button">
+            1:1
+          </button>
+          <button class="ratio-button" data-ratio="4:5" type="button">
+            4:5
+          </button>
+          <button class="ratio-button" data-ratio="9:16" type="button">
+            9:16
+          </button>
+        </div>
+      </section>
+    </aside>
+
+    <!-- 가운데 미리보기 -->
+    <section class="panel preview-panel">
+      <div class="panel-heading">
+        <span>02</span>
+        <div>
+          <h2>LIVE PREVIEW</h2>
+          <p>편집 내용이 즉시 반영됩니다.</p>
+        </div>
+      </div>
+
+      <div class="preview-stage">
+        <canvas
+          id="previewCanvas"
+          width="1080"
+          height="1080"
+          aria-label="카드 이미지 미리보기"
+        ></canvas>
+      </div>
+
+      <div class="preview-info">
+        <span id="ratioLabel">1:1 · 1080 × 1080</span>
+        <span id="previewStatus">READY</span>
+      </div>
+    </section>
+
+    <!-- 오른쪽 저장/템플릿 패널 -->
+    <aside class="panel output-panel">
+      <div class="panel-heading">
+        <span>03</span>
+        <div>
+          <h2>OUTPUT</h2>
+          <p>템플릿과 파일을 관리하세요.</p>
+        </div>
+      </div>
+
+      <section class="control-section">
+        <label class="section-label" for="templateName">
+          TEMPLATE
+        </label>
+
+        <input
+          id="templateName"
+          class="text-input"
+          type="text"
+          maxlength="40"
+          placeholder="템플릿 이름"
+        >
+
+        <button id="saveTemplateButton" class="primary-button" type="button">
+          SAVE TEMPLATE
+        </button>
+
+        <div id="templateList" class="template-list">
+          <p class="empty-message">저장된 템플릿이 없습니다.</p>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <span class="section-label">BACKUP</span>
+
+        <div class="button-grid">
+          <button id="exportJsonButton" class="secondary-button" type="button">
+            EXPORT JSON
+          </button>
+
+          <label class="secondary-button file-button" for="importJsonInput">
+            IMPORT JSON
+          </label>
+
+          <input
+            id="importJsonInput"
+            type="file"
+            accept=".json,application/json"
+            hidden
+          >
+        </div>
+
+        <p id="jsonMessage" class="helper-text">
+          템플릿을 JSON으로 백업하거나 복원할 수 있습니다.
+        </p>
+      </section>
+
+      <section class="control-section">
+        <span class="section-label">DOWNLOAD</span>
+
+        <div class="button-grid">
+          <button id="downloadPngButton" class="primary-button" type="button">
+            PNG
+          </button>
+
+          <button id="downloadJpegButton" class="primary-button" type="button">
+            JPEG
+          </button>
+        </div>
+      </section>
+    </aside>
+
+  </main>
+
+  <footer>
+    <span>FRAME LAB / T03</span>
+    <span>LOCAL-FIRST CARD EDITOR</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
