@@ -334,8 +334,7 @@ function drawText() {
     ctx.fillText(
       line,
       x,
-      startY + index * lineHeight,
-      maxWidth
+      startY + index * lineHeight
     );
   });
 
