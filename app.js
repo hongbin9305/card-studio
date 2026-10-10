@@ -195,23 +195,69 @@ function getWrappedLines(text, maxWidth) {
   const paragraphs = String(text).split("\n");
   const lines = [];
 
+  // 이모지와 결합 문자를 하나의 글자 단위로 처리
+  const segmenter = typeof Intl.Segmenter === "function"
+    ? new Intl.Segmenter("ko", { granularity: "grapheme" })
+    : null;
+
+  function getCharacters(value) {
+    return segmenter
+      ? Array.from(segmenter.segment(value), item => item.segment)
+      : Array.from(value);
+  }
+
+  function splitLongWord(word) {
+    const result = [];
+    let part = "";
+
+    for (const character of getCharacters(word)) {
+      const next = part + character;
+
+      if (ctx.measureText(next).width > maxWidth && part) {
+        result.push(part);
+        part = character;
+      } else {
+        part = next;
+      }
+    }
+
+    if (part) {
+      result.push(part);
+    }
+
+    return result;
+  }
+
   for (const paragraph of paragraphs) {
     if (paragraph === "") {
       lines.push("");
       continue;
     }
 
+    const words = paragraph.trim().split(/\s+/);
     let currentLine = "";
 
-    for (const character of Array.from(paragraph)) {
-      const testLine = currentLine + character;
-      const width = ctx.measureText(testLine).width;
+    for (const word of words) {
+      const candidate = currentLine
+        ? currentLine + " " + word
+        : word;
 
-      if (width > maxWidth && currentLine !== "") {
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        currentLine = candidate;
+        continue;
+      }
+
+      if (currentLine) {
         lines.push(currentLine);
-        currentLine = character;
+        currentLine = "";
+      }
+
+      if (ctx.measureText(word).width <= maxWidth) {
+        currentLine = word;
       } else {
-        currentLine = testLine;
+        const parts = splitLongWord(word);
+        lines.push(...parts.slice(0, -1));
+        currentLine = parts[parts.length - 1] || "";
       }
     }
 
