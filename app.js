@@ -282,7 +282,7 @@ function drawText() {
     모든 출력 비율의 폭이 1080이므로
     화면과 다운로드 결과의 크기가 동일하게 유지된다.
   */
-  const fontSize = Math.max(24, Math.min(120, baseSize));
+  let fontSize = Math.max(12, Math.min(120, baseSize));
 
   const xPercent = safeNumber(textXInput.value, 50);
   const yPercent = safeNumber(textYInput.value, 78);
@@ -291,8 +291,8 @@ function drawText() {
   const y = canvas.height * (yPercent / 100);
 
   const maxWidth = canvas.width * 0.90;
-  const lineHeight = fontSize * 1.28;
-
+  let lineHeight = fontSize * 1.28;
+   
   ctx.save();
 
   ctx.font =
@@ -307,7 +307,22 @@ function drawText() {
   ctx.shadowBlur = 14;
   ctx.shadowOffsetY = 3;
 
-  const lines = getWrappedLines(text, maxWidth);
+  let lines = getWrappedLines(text, maxWidth);
+
+// 문구가 너무 길면 이미지 안에 들어갈 때까지 글자 크기 조절
+const minFontSize = 12;
+const availableHeight = canvas.height * 0.9;
+
+while (
+  fontSize > minFontSize &&
+  (lines.length - 1) * lineHeight + fontSize > availableHeight
+) {
+  fontSize -= 1;
+  lineHeight = fontSize * 1.28;
+
+  ctx.font = `800 ${fontSize}px Arial, "Noto Sans KR", sans-serif`;
+  lines = getWrappedLines(text, maxWidth);
+}
 
   const totalHeight = (lines.length - 1) * lineHeight;
 
