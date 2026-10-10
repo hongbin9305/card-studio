@@ -290,7 +290,7 @@ function drawText() {
   const x = canvas.width * (xPercent / 100);
   const y = canvas.height * (yPercent / 100);
 
-  const maxWidth = canvas.width * 0.82;
+  const maxWidth = canvas.width * 0.90;
   const lineHeight = fontSize * 1.28;
 
   ctx.save();
