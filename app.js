@@ -287,7 +287,7 @@ function drawText() {
   const xPercent = safeNumber(textXInput.value, 50);
   const yPercent = safeNumber(textYInput.value, 78);
 
-  const x = canvas.width * (xPercent / 100);
+  let x = canvas.width * (xPercent / 100);
   const y = canvas.height * (yPercent / 100);
 
   const maxWidth = canvas.width * 0.90;
