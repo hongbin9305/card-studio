@@ -310,7 +310,7 @@ function drawText() {
   let lines = getWrappedLines(text, maxWidth);
 
 // 문구가 너무 길면 이미지 안에 들어갈 때까지 글자 크기 조절
-const minFontSize = 12;
+const minFontSize = 8;
 const availableHeight = canvas.height * 0.8;
 
 while (
