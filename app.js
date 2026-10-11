@@ -323,7 +323,26 @@ while (
   ctx.font = `800 ${fontSize}px Arial, "Noto Sans KR", sans-serif`;
   lines = getWrappedLines(text, maxWidth);
 }
+  
+   // 글자가 카드 좌우 경계 밖으로 잘리지 않도록 X 위치 보정
+const horizontalPadding = fontSize * 0.5;
 
+const widestLine = Math.max(
+  0,
+  ...lines.map(line => ctx.measureText(line).width)
+);
+
+const halfTextWidth = widestLine / 2;
+
+const minX = horizontalPadding + halfTextWidth;
+const maxX = canvas.width - horizontalPadding - halfTextWidth;
+
+if (minX <= maxX) {
+  x = Math.max(minX, Math.min(maxX, x));
+} else {
+  x = canvas.width / 2;
+}
+   
   const totalHeight = (lines.length - 1) * lineHeight;
 
   let startY = y - totalHeight / 2;
